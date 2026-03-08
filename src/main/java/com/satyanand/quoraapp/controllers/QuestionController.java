@@ -38,4 +38,13 @@ public class QuestionController {
         return questionService.deleteQuestionById(id)
                 .doOnError(error -> System.out.println("Error deleting question by id: " + error));
     }
+
+    @GetMapping("/search")
+    public Flux<QuestionResponseDTO> searchQuestions(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        return questionService.searchQuestions(query, page, size);
+    }
+
 }

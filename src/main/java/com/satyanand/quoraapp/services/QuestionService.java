@@ -6,9 +6,12 @@ import com.satyanand.quoraapp.dto.QuestionResponseDTO;
 import com.satyanand.quoraapp.models.Question;
 import com.satyanand.quoraapp.repositories.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +54,13 @@ public class QuestionService implements IQuestionService{
                 .doOnError(error -> System.out.println("Error deleting question: " + error));
 
 
+    }
+
+    @Override
+    public Flux<QuestionResponseDTO> searchQuestions(String query, int page, int size) {
+        return questionRepository.findByTitleOrContentContainingIgnoreCase(query, PageRequest.of(page, size))
+                .map(QuestionAdapter::toQuestionResponseDTO)
+                .doOnError(error -> System.out.println("Error searching questions: " + error.getMessage()))
+                .doOnComplete(() -> System.out.println("question found successfully"));
     }
 }
