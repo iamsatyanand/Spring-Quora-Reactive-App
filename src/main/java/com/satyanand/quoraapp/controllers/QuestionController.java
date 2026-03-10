@@ -23,8 +23,11 @@ public class QuestionController {
     }
 
     @GetMapping
-    public Flux<QuestionResponseDTO> getAllQuestions() {
-        return questionService.getAllQuestions();
+    public Flux<QuestionResponseDTO> getAllQuestions(
+            @RequestParam(required = false) String cursor,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return questionService.getAllQuestions(cursor, size);
     }
 
     @GetMapping("/{id}")

@@ -5,12 +5,16 @@ import com.satyanand.quoraapp.dto.QuestionRequestDTO;
 import com.satyanand.quoraapp.dto.QuestionResponseDTO;
 import com.satyanand.quoraapp.models.Question;
 import com.satyanand.quoraapp.repositories.QuestionRepository;
+import com.satyanand.quoraapp.utils.CursorUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -32,9 +36,26 @@ public class QuestionService implements IQuestionService{
     }
 
     @Override
-    public Flux<QuestionResponseDTO> getAllQuestions() {
-        return questionRepository.findAll()
-                .map(QuestionAdapter::toQuestionResponseDTO);
+    public Flux<QuestionResponseDTO> getAllQuestions( String cursor, int size) {
+
+        Pageable pageable = PageRequest.of(0, size);
+        if(!CursorUtils.isValidCursor(cursor)){
+
+            return questionRepository.findTop10ByOrderByCreatedAtAsc()
+                    .take(size)
+                    .map(QuestionAdapter::toQuestionResponseDTO)
+                    .doOnError(error -> System.out.println("Error fetching questions "+ error))
+                    .doOnComplete(() -> System.out.println("Fetched successfully"));
+        }
+        else{
+            LocalDateTime cursorDateTime = CursorUtils.parseCursor(cursor);
+            return questionRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(cursorDateTime, pageable)
+                    .map(QuestionAdapter::toQuestionResponseDTO)
+                    .doOnError(error -> System.out.println("Error fetching questions "+ error))
+                    .doOnComplete(() -> System.out.println("Fetched successfully"));
+        }
+
+
     }
 
     @Override

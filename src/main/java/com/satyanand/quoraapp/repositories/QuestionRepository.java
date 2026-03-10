@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface QuestionRepository extends ReactiveMongoRepository<Question, String> {
 
@@ -14,6 +16,10 @@ public interface QuestionRepository extends ReactiveMongoRepository<Question, St
 
     @Query(" { $or : [ {title : { $options : 'i', $regex : ?0} }, {content : {$options : 'i', $regex : ?0}} ] } ")
     Flux<Question> findByTitleOrContentContainingIgnoreCase(String searchTerm, Pageable pageable);
+
+    Flux<Question> findByCreatedAtGreaterThanOrderByCreatedAtAsc(LocalDateTime createdAt, Pageable pageable);
+
+    Flux<Question> findTop10ByOrderByCreatedAtAsc();
 
 
     // search via text search indexing and also sort via ranking
