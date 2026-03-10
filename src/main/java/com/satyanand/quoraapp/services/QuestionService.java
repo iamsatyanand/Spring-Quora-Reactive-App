@@ -1,6 +1,7 @@
 package com.satyanand.quoraapp.services;
 
 import com.satyanand.quoraapp.adapter.QuestionAdapter;
+import com.satyanand.quoraapp.dto.CursorPageResponseDTO;
 import com.satyanand.quoraapp.dto.QuestionRequestDTO;
 import com.satyanand.quoraapp.dto.QuestionResponseDTO;
 import com.satyanand.quoraapp.models.Question;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -33,6 +35,43 @@ public class QuestionService implements IQuestionService{
                 .doOnError(error -> System.out.println("Error creating question "+ error ));
 
 
+    }
+
+    @Override
+    public Mono<CursorPageResponseDTO<QuestionResponseDTO>> getAllQuestionsWithCursorResponse(String prevCursor, String nextCursor, int size) {
+
+        int limit = size + 1;
+        Pageable pageable = PageRequest.of(0, size);
+
+        Flux<QuestionResponseDTO> questionFlux;
+        Mono<List<QuestionResponseDTO>> questionListMono;
+        if(!CursorUtils.isValidCursor(prevCursor) && !CursorUtils.isValidCursor(nextCursor)){
+            return null;
+        }
+        else if(prevCursor == null || prevCursor.isBlank()){
+            LocalDateTime nextCursorDate = CursorUtils.parseCursor(nextCursor);
+            questionFlux = questionRepository
+                    .findByCreatedAtGreaterThanOrderByCreatedAtAsc(nextCursorDate, pageable)
+                    .map(QuestionAdapter::toQuestionResponseDTO);
+
+            questionListMono = questionFlux.collectList();
+            return questionListMono.map(questionList -> buildCursorResponse(questionList, limit));
+
+        }
+        else{
+
+        }
+
+
+    }
+
+    private CursorPageResponseDTO<QuestionResponseDTO> buildCursorResponse(List<QuestionResponseDTO> questions, int size){
+
+        boolean hasNext = size > questions.size();
+
+
+
+        return null;
     }
 
     @Override
