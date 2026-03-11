@@ -1,5 +1,6 @@
 package com.satyanand.quoraapp.controllers;
 
+import com.satyanand.quoraapp.dto.CursorPageResponseDTO;
 import com.satyanand.quoraapp.dto.QuestionRequestDTO;
 import com.satyanand.quoraapp.dto.QuestionResponseDTO;
 import com.satyanand.quoraapp.services.IQuestionService;
@@ -28,6 +29,15 @@ public class QuestionController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return questionService.getAllQuestions(cursor, size);
+    }
+
+    @GetMapping("/cursor")
+    public Mono<CursorPageResponseDTO<QuestionResponseDTO>> getAllQuestionsWithCursor(
+            @RequestParam(required = false) String prevCursor,
+            @RequestParam(required = false) String nextCursor,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return questionService.getAllQuestionsWithCursorResponse(prevCursor, nextCursor, size);
     }
 
     @GetMapping("/{id}")

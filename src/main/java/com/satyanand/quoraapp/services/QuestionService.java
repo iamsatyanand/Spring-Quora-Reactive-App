@@ -139,7 +139,6 @@ public class QuestionService implements IQuestionService{
                 .data(questions)
                 .pagination(
                         CursorPaginationDTO.builder()
-                                .hasPrev(prevCursor != null)
                                 .hasNext(hasNext)
                                 .nextCursor(nextCursor)
                                 .prevCursor(prevCursor)
