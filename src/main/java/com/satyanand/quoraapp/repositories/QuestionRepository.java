@@ -19,7 +19,7 @@ public interface QuestionRepository extends ReactiveMongoRepository<Question, St
 
     Flux<Question> findByCreatedAtGreaterThanOrderByCreatedAtAsc(LocalDateTime createdAt, Pageable pageable);
 
-    Flux<Question> findByCreatedAtLessThanOrderByCreatedAtDesc(LocalDateTime createdAtIsLessThan, Pageable pageable);
+    Flux<Question> findByCreatedAtLessThanOrderByCreatedAtDesc(LocalDateTime createdAt, Pageable pageable);
 
     Flux<Question> findAllByOrderByCreatedAtAsc(Pageable pageable);
 

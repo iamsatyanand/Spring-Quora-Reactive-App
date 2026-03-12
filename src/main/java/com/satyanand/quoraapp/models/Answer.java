@@ -9,31 +9,33 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Document(collection = "questions")
-public class Question {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "answers")
+public class Answer {
 
     @Id
     private String id;
 
-    @NotBlank(message = "Title is required")
-    @Size(min=10, max=100, message = "Title must be between 10 and 100 characters")
-    private String title;
-
-    @NotBlank(message = "Content is required")
-    @Size(min=20, max = 1000,message = "Content must be at least 20 characters long")
+    @NotBlank(message = "Content is required.")
+    @Size(min = 10, max = 1000, message = "Content must be between 10 and 1000 characters")
     private String content;
+
+    @Indexed
+    private String questionId;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
 }
