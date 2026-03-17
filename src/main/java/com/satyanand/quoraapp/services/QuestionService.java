@@ -1,11 +1,13 @@
 package com.satyanand.quoraapp.services;
 
+import com.satyanand.quoraapp.ViewCountEvent;
 import com.satyanand.quoraapp.adapter.QuestionAdapter;
 import com.satyanand.quoraapp.dto.CursorPageResponseDTO;
 import com.satyanand.quoraapp.dto.CursorPaginationDTO;
 import com.satyanand.quoraapp.dto.QuestionRequestDTO;
 import com.satyanand.quoraapp.dto.QuestionResponseDTO;
 import com.satyanand.quoraapp.models.Question;
+import com.satyanand.quoraapp.producer.KafkaEventProducer;
 import com.satyanand.quoraapp.repositories.QuestionRepository;
 import com.satyanand.quoraapp.utils.CursorUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import java.util.List;
 public class QuestionService implements IQuestionService{
 
     public final QuestionRepository questionRepository;
+    public final KafkaEventProducer kafkaEventProducer;
+
     @Override
     public Mono<QuestionResponseDTO> createQuestion(QuestionRequestDTO questionRequestDTO) {
 
@@ -173,8 +177,13 @@ public class QuestionService implements IQuestionService{
     @Override
     public Mono<QuestionResponseDTO> getQuestionById(String id) {
         return questionRepository.findById(id)
+                .switchIfEmpty(Mono.error(new RuntimeException("Question not found with id: " + id)))
                 .map(QuestionAdapter::toQuestionResponseDTO)
-                .switchIfEmpty(Mono.error(new RuntimeException("Question not found with id: " + id)));
+                .doOnSuccess(response -> {
+                    System.out.println("Question fetched successfully by id: "+ response);
+                    ViewCountEvent viewCountEvent = new ViewCountEvent(id, "question", LocalDateTime.now());
+                    kafkaEventProducer.publishViewCountEvent(viewCountEvent);
+                });
 
     }
 

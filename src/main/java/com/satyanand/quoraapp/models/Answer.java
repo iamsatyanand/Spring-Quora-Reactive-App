@@ -33,6 +33,7 @@ public class Answer {
     private String questionId;
 
     @CreatedDate
+    @Indexed
     private LocalDateTime createdAt;
 
     @LastModifiedDate

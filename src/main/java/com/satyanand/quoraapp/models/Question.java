@@ -31,6 +31,8 @@ public class Question {
     @Size(min=20, max = 1000,message = "Content must be at least 20 characters long")
     private String content;
 
+    private Integer views = 0;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
