@@ -1,6 +1,6 @@
 package com.satyanand.quoraapp.producer;
 
-import com.satyanand.quoraapp.ViewCountEvent;
+import com.satyanand.quoraapp.events.ViewCountEvent;
 import com.satyanand.quoraapp.config.KafkaConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;

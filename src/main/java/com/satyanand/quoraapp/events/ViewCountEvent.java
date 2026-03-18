@@ -1,4 +1,4 @@
-package com.satyanand.quoraapp;
+package com.satyanand.quoraapp.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

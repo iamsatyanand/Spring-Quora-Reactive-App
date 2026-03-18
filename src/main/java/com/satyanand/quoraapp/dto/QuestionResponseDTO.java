@@ -15,5 +15,6 @@ public class QuestionResponseDTO {
     private String id;
     private String title;
     private String content;
+    private Integer Views;
     private LocalDateTime createdAt;
 }

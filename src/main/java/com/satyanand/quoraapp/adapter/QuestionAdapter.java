@@ -14,6 +14,7 @@ public class QuestionAdapter {
                 .id(question.getId())
                 .title(question.getTitle())
                 .content(question.getContent())
+                .Views(question.getViews())
                 .createdAt(question.getCreatedAt())
                 .build();
     }

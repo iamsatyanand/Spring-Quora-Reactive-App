@@ -1,6 +1,6 @@
 package com.satyanand.quoraapp.services;
 
-import com.satyanand.quoraapp.ViewCountEvent;
+import com.satyanand.quoraapp.events.ViewCountEvent;
 import com.satyanand.quoraapp.adapter.QuestionAdapter;
 import com.satyanand.quoraapp.dto.CursorPageResponseDTO;
 import com.satyanand.quoraapp.dto.CursorPaginationDTO;
